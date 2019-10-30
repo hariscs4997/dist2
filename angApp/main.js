@@ -213,7 +213,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"d-flex\">\r\n  \r\n  \r\n  <nav class=\"navbar navbar-expand-lg navbar-light col-md-10\" style=\"background-color:#fff\">\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/pending\" >Pending</a>\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/addtopic\" >Add Topic</a>     \r\n  </nav>\r\n</div>\r\n\r\n<div class=\"col-md-7 ml-5 mt-5 mb-5 form-container\">\r\n  <form [formGroup]=\"addTopic\" class=\"form\" (submit)='addTopicHandler()'>\r\n    <div class=\"form-group\">\r\n      <label for=\"exampleInputEmail1\">Title</label>\r\n      <input type=\"text\" class=\"form-control\" formControlName='title' placeholder=\"Enter Resource Link Here\">\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.title.errors\">Title is required</label>\r\n    </div>\r\n    <div class=\"form-group\">\r\n      <label for=\"exampleInputPassword1\">Subject</label>\r\n      <input type=\"number\" class=\"form-control\" formControlName='subject'  placeholder=\"Subject\">\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.subject.errors\">Subject is required</label>\r\n    </div>\r\n    <div class=\"form-group\">\r\n      <label for=\"exampleInputPassword1\">Level</label>\r\n      <input type=\"number\" class=\"form-control\" formControlName='level'  placeholder=\"Topic Level\">\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.level.errors\">Level is required</label>\r\n    </div>   \r\n    <button type=\"submit\" class=\"btn btn-success btn-block\">Submit</button>\r\n  </form>\r\n</div>\r\n"
+module.exports = "<div class=\"d-flex\">\r\n\r\n\r\n  <nav class=\"navbar navbar-expand-lg navbar-light col-md-10\" style=\"background-color:#fff\">\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/pending\">Pending</a>\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/addtopic\">Add Topic</a>\r\n  </nav>\r\n</div>\r\n\r\n<div class=\"col-md-7 ml-5 mt-5 mb-5 form-container\">\r\n  <form [formGroup]=\"addTopic\" class=\"form\" (submit)='addTopicHandler()'>\r\n    <div class=\"form-group\">\r\n      <label for=\"exampleInputEmail1\">Title</label>\r\n      <input type=\"text\" class=\"form-control\" formControlName='title' placeholder=\"Enter Resource Link Here\">\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.title.errors\">Title is required</label>\r\n    </div>\r\n    <div class=\"form-group\">\r\n      <label>Subject</label>\r\n      <select class=\"form-control\" (change)='getLevel($event)' formControlName='subject'>\r\n        <option value=\"\" disabled>Select Subject</option>\r\n        <option [value]=\"sub.id\" *ngFor='let sub of subjects'>{{sub.title}}</option>\r\n      </select>\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.subject.errors\">Subject is required</label>\r\n    </div>\r\n    <div class=\"form-group\">\r\n      <label>Level</label>\r\n      <select class=\"form-control\" formControlName='level'>\r\n        <option value=\"\" disabled>Select Level</option>\r\n        <option [value]=\"sub.id\" *ngFor='let sub of subCat'>{{sub.title}}</option>\r\n      </select>\r\n      <label class=\"error\" *ngIf=\"subbmitted && f.level.errors\">Level is required</label>\r\n    </div>\r\n    <button type=\"submit\" class=\"btn btn-success btn-block\">Submit</button>\r\n  </form>\r\n</div>"
 
 /***/ }),
 
@@ -237,9 +237,28 @@ __webpack_require__.r(__webpack_exports__);
 
 var AddtopicComponent = /** @class */ (function () {
     function AddtopicComponent(fb, api) {
+        var _this = this;
         this.fb = fb;
         this.api = api;
         this.subbmitted = false;
+        this.getSubjects = function () { return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this, void 0, void 0, function () {
+            var data;
+            var _this = this;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.api.getData('get_subjects/')];
+                    case 1:
+                        data = _a.sent();
+                        data.subscribe(function (res) {
+                            console.log(res);
+                            if (res.length > 0) {
+                                _this.subjects = res;
+                            }
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
         if (localStorage.getItem('Token') == null || localStorage.getItem('Token') == undefined) {
             window.location.href = '/login';
         }
@@ -249,6 +268,27 @@ var AddtopicComponent = /** @class */ (function () {
             title: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]],
             subject: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]],
             level: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]]
+        });
+        this.getSubjects();
+    };
+    AddtopicComponent.prototype.getLevel = function (e) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var data;
+            var _this = this;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.sub_id = e.target.value;
+                        return [4 /*yield*/, this.api.getData('get_level_by_subject/?sub_id=' + this.sub_id)];
+                    case 1:
+                        data = _a.sent();
+                        data.subscribe(function (res) {
+                            console.log(res);
+                            _this.subCat = res;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     AddtopicComponent.prototype.addTopicHandler = function () {
@@ -267,7 +307,8 @@ var AddtopicComponent = /** @class */ (function () {
                             subject: this.addTopic.controls['subject'].value,
                             level: this.addTopic.controls['level'].value
                         };
-                        return [4 /*yield*/, this.api.postData('/create_topic/', topic)];
+                        console.log(topic);
+                        return [4 /*yield*/, this.api.postData('create_topic/', topic)];
                     case 2:
                         data = _a.sent();
                         data.subscribe(function (res) {
@@ -519,7 +560,7 @@ module.exports = "h5 > a{\r\n    color:black;\r\n}\r\n\r\nh6 > a{\r\n    color:b
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Navbar Header -->\r\n<div class=\"d-flex bg-light\">\r\n\r\n  <div class=\"col-md-2 pt-2\" style=\"text-align: center\">\r\n    <a routerLink=\"/categories\" *ngIf='logged'><img src=\"assets/images/logo1.png\" width=\"100\" height=\"60\"></a>\r\n    <a routerLink=\"/login\" *ngIf='!logged'><img src=\"assets/images/logo1.png\" width=\"100\" height=\"60\"></a>\r\n  </div>\r\n\r\n  <div class=\"col-md-6 pt-3\" *ngIf='!loginPage'>\r\n    <div class=\"input-group mb-3\">\r\n      <input type=\"search\" class=\"form-control\" #inputSearch placeholder=\"Search\">\r\n      <div class=\"input-group-append\">\r\n        <button class=\"btn btn-success\" (click)=\"searchContents()\">Search</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"col-md-1\"> </div>\r\n\r\n  <div class=\"dropdown col-md-3 pt-3 pr-5 text-right\" *ngIf='!loginPage'>\r\n    <a class=\" dropdown-toggle user\" data-toggle=\"dropdown\">\r\n      <img height=\"40\" width=\"40\" src=\"assets/images/user-logo.png\">\r\n    </a>\r\n    <ul class=\"dropdown-menu text-center\">\r\n      <li><a class=\"pointer\" (click)=\"logout()\">Logout</a></li>\r\n    </ul>\r\n  </div>\r\n\r\n</div>\r\n\r\n<div class=\"d-flex\" style=\"min-height: 90vh;\">\r\n  <div class=\"col-md-2 bg-light px-0\" style=\"text-align: center\" *ngIf='!loginPage'>\r\n    <div class=\"col-12 pt-3 pb-2 px-0 bg-theme mb-3\">\r\n      <div class=\"pl-4 pr-2\">\r\n        <h4 style=\"color: White\">Resources</h4>\r\n      </div>\r\n    </div>\r\n    <h5><a routerLink=\"/resource\">My Resources</a></h5>\r\n    <h6 class=\"pt-2\"><a routerLink=\"/add-resource\">Create Resource</a></h6>\r\n    <h5 class=\"pt-2\"><a href=\"#\" style=\"color: #1d8459;\">Follow</a></h5>\r\n    <div class=\"pl-5\">\r\n      <hr>\r\n    </div>\r\n    <h6><a class=\"nav-item nav-link\" href=\"#\">My Pins</a></h6>\r\n    <h6><a class=\"nav-item nav-link\" routerLink=\"/pending\">Admin</a></h6>\r\n    <h6><a routerLink=\"/categories\">Categories</a></h6>\r\n    <h6 class=\"pt-1\"><a routerLink=\"/top-rated\">Top Rated</a></h6>\r\n    <h6 class=\"pt-1\"><a href=\"#\">Top Authors</a></h6>\r\n    <!-- <div class=\"pl-5\">\r\n                    <hr>\r\n                </div> -->\r\n    <h6 class=\"pt-1\"><a href=\"#\">Most viewed</a></h6>\r\n    <h6 class=\"pt-1\"><a href=\"#\">Most Popular</a></h6>\r\n    <div class=\"my-rating\"></div>\r\n  </div>\r\n\r\n  <div class=\"col-md-10\" style=\"background-color: #eeeeee\" *ngIf='!loginPage'>\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n  <div class=\"d-inline-block\" style=\"background-color: #fff;margin: 50px auto;text-align: center;\" *ngIf='loginPage'>\r\n    <div class=\"d-flex\">\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n\r\n\r\n</div>\r\n<!-- <div class=\"d-flex\"\r\n  style=\"min-height: 80vh;text-align: center;align-items: center;width: 75%;justify-content: space-around;\"\r\n  *ngIf='loginPage'>\r\n  <router-outlet></router-outlet>\r\n</div> -->"
+module.exports = "<!-- Navbar Header -->\r\n<div class=\"d-flex bg-light\">\r\n\r\n  <div class=\"col-md-2 pt-2\" style=\"text-align: center\">\r\n    <a routerLink=\"/categories\" *ngIf='logged'><img src=\"assets/images/logo1.png\" width=\"100\" height=\"60\"></a>\r\n    <a routerLink=\"/login\" *ngIf='!logged'><img src=\"assets/images/logo1.png\" width=\"100\" height=\"60\"></a>\r\n  </div>\r\n\r\n  <div class=\"col-md-6 pt-3\" *ngIf='!loginPage'>\r\n    <div class=\"input-group mb-3\">\r\n      <input type=\"search\" class=\"form-control\" #inputSearch placeholder=\"Search\">\r\n      <div class=\"input-group-append\">\r\n        <button class=\"btn btn-success\" (click)=\"searchContents()\">Search</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"col-md-1\"> </div>\r\n\r\n  <div class=\"dropdown col-md-3 pt-3 pr-5 text-right\" *ngIf='!loginPage'>\r\n    <a class=\" dropdown-toggle user\" data-toggle=\"dropdown\">\r\n      <img height=\"40\" width=\"40\" src=\"assets/images/user-logo.png\">\r\n    </a>\r\n    <ul class=\"dropdown-menu text-center\">\r\n      <li><a class=\"pointer\" (click)=\"logout()\">Logout</a></li>\r\n    </ul>\r\n  </div>\r\n\r\n</div>\r\n\r\n<div class=\"d-flex\" style=\"min-height: 90vh;\">\r\n  <div class=\"col-md-2 bg-light px-0\" style=\"text-align: center\" *ngIf='!loginPage'>\r\n    <div class=\"col-12 pt-3 pb-2 px-0 bg-theme mb-3\">\r\n      <div class=\"pl-4 pr-2\">\r\n        <h4 style=\"color: White\">Resources</h4>\r\n      </div>\r\n    </div>\r\n    <h5><a routerLink=\"/resource\">My Resources</a></h5>\r\n    <h6 class=\"pt-2\" *ngIf='currentUser.role || currentUser.is_admin'><a routerLink=\"/add-resource\">Create Resource</a></h6>\r\n    <h6 class=\"pt-2\" *ngIf='currentUser.is_admin'><a routerLink=\"/addtopic\">Create Topic</a></h6>\r\n    <h6 class=\"pt-2\" *ngIf='currentUser.is_admin'><a routerLink=\"/pending\">Get Pendings</a></h6>\r\n    <div class=\"pl-5\">\r\n      <hr>\r\n    </div>\r\n    <h6><a routerLink=\"/categories\">Categories</a></h6>\r\n    <h6 class=\"pt-1\"><a routerLink=\"/top-rated\">Top Rated</a></h6>\r\n    <h6 class=\"pt-1\"><a routerLink=\"/teachers\">Teacher</a></h6>\r\n    <div class=\"my-rating\"></div>\r\n  </div>\r\n\r\n  <div class=\"col-md-10\" style=\"background-color: #eeeeee\" *ngIf='!loginPage'>\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n  <div class=\"d-inline-block\" style=\"background-color: #fff;margin: 50px auto;text-align: center;\" *ngIf='loginPage'>\r\n    <div class=\"d-flex\">\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n\r\n\r\n</div>\r\n<!-- <div class=\"d-flex\"\r\n  style=\"min-height: 80vh;text-align: center;align-items: center;width: 75%;justify-content: space-around;\"\r\n  *ngIf='loginPage'>\r\n  <router-outlet></router-outlet>\r\n</div> -->"
 
 /***/ }),
 
@@ -561,6 +602,7 @@ var AppComponent = /** @class */ (function () {
         }
         else {
             this.loginPage = false;
+            this.currentUser = JSON.parse(localStorage.getItem('currentLogged'));
         }
         this.router.routeReuseStrategy.shouldReuseRoute = function () {
             return false;
@@ -601,6 +643,7 @@ var AppComponent = /** @class */ (function () {
         var res = this.authService.logout();
         if (res) {
             this.logged = false;
+            localStorage.removeItem('currentLogged');
             window.location.href = '/login';
         }
     };
@@ -1173,6 +1216,7 @@ var LoginComponent = /** @class */ (function () {
                             this.http.get(this.api.baseurl + 'set_retrieve_role/', httpHeaders).subscribe(function (result) {
                                 console.log(result);
                                 if (result.role != undefined) {
+                                    localStorage.setItem('currentLogged', JSON.stringify(result));
                                     window.location.href = '/categories';
                                 }
                                 else {
@@ -1220,7 +1264,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"d-flex\">\r\n\r\n\r\n  <nav class=\"navbar navbar-expand-lg navbar-light col-md-10\" style=\"background-color:#fff\">\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/pending\">Pending</a>\r\n    <a class=\"navbar-brand pr-2\" routerLink=\"/addtopic\">Add Topic</a>\r\n  </nav>\r\n</div>\r\n\r\n<div class=\"container-fulid pt-2\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md-3 pb-3\" *ngFor='let item of data; let i = index'>\r\n      <div class=\"card\">\r\n        <h5 class=\"card-title pt-2 text-center ellipsis\">{{item.resource_type}}</h5>\r\n        <img class=\"card-img-top\" src=\"assets/images/book.png\" alt=\"Card image cap\">\r\n        <div class=\"card-body\">\r\n          <input type=\"text\" class=\"form-control\" placeholder=\"www.google.com/first+bar+website.png\"\r\n            style=\"border: 1px solid black\">\r\n          <p class=\"card-text ellipsis\">{{item.description}}</p>\r\n          <button class=\"btn btn-success\" (click)='approve(item.id,i)'>Approve Topic</button>\r\n        </div>\r\n      </div>\r\n    </div>\r\n    <div class=\"not_found\" *ngIf='empty'>\r\n      <img src=\"assets/images/not-found.png\" alt=\"\">\r\n    </div>\r\n  </div>\r\n</div>"
+module.exports = "<div class=\"container-fulid pt-2\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md-3 pb-3\" *ngFor='let item of data; let i = index'>\r\n      <div class=\"card\">\r\n        <h5 class=\"card-title pt-2 text-center ellipsis\">{{item.resource_type}}</h5>\r\n        <img class=\"card-img-top\" src=\"assets/images/book.png\" alt=\"Card image cap\">\r\n        <div class=\"card-body\">\r\n          <input type=\"text\" class=\"form-control\" placeholder=\"www.google.com/first+bar+website.png\"\r\n            style=\"border: 1px solid black\">\r\n          <p class=\"card-text ellipsis\">{{item.description}}</p>\r\n          <button class=\"btn btn-success\" (click)='approve(item.id,i)'>Approve Topic</button>\r\n        </div>\r\n      </div>\r\n    </div>\r\n    <div class=\"not_found\" *ngIf='empty'>\r\n      <img src=\"assets/images/not-found.png\" alt=\"\">\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -1413,8 +1457,7 @@ var ResourceComponent = /** @class */ (function () {
                                 _this.ratings = res.ratings.filter(function (c) { return c.resource == _this.data[i].id; });
                                 var twoComment = void 0;
                                 if (_this.comments.length > 2) {
-                                    twoComment.push(_this.comments[0]);
-                                    twoComment.push(_this.comments[1]);
+                                    twoComment = _this.comments.slice(0, 2);
                                 }
                                 else {
                                     twoComment = Array.from(_this.comments);
@@ -2018,8 +2061,7 @@ var TopRatedComponent = /** @class */ (function () {
                                 _this.ratings = res.ratings.filter(function (c) { return c.resource == _this.data[i].id; });
                                 var twoComment = [];
                                 if (_this.comments.length > 2) {
-                                    twoComment.push(_this.comments[0]);
-                                    twoComment.push(_this.comments[1]);
+                                    twoComment = _this.comments.slice(0, 2);
                                 }
                                 else {
                                     twoComment = twoComment.concat([_this.comments]);
