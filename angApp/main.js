@@ -1908,11 +1908,8 @@ var ResourceComponent = /** @class */ (function () {
                             for (var i = 0; i < _this.data.length; i++) {
                                 _loop_1(i);
                             }
-                            var _loop_2 = function (i) {
-                                _this.onlyRating = _this.ratings.filter(function (r) { return r.rated_by != _this.comments[i].commenter; });
-                            };
                             for (var i = 0; i < _this.data.length; i++) {
-                                _loop_2(i);
+                                // this.onlyRating = this.ratings.filter(r => r.rated_by != this.comments[i].commenter)
                             }
                             _this.api.noloader();
                             console.log(_this.data);
@@ -2246,11 +2243,8 @@ var SearchComponent = /** @class */ (function () {
                             for (var i = 0; i < _this.data.length; i++) {
                                 _loop_1(i);
                             }
-                            var _loop_2 = function (i) {
-                                _this.onlyRating = _this.ratings.filter(function (r) { return r.rated_by != _this.comments[i].commenter; });
-                            };
                             for (var i = 0; i < _this.data.length; i++) {
-                                _loop_2(i);
+                                // this.onlyRating = this.ratings.filter(r => r.rated_by != this.comments[i].commenter)
                             }
                             _this.api.noloader();
                             console.log('this.data');
@@ -2580,6 +2574,7 @@ var TeachersListComponent = /** @class */ (function () {
         var _this = this;
         this.api = api;
         this.empty = false;
+        this.resources = [];
         this.getTeacher = function () { return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this, void 0, void 0, function () {
             var data;
             var _this = this;
@@ -2648,14 +2643,14 @@ var TeachersListComponent = /** @class */ (function () {
         this.getTeacher();
     };
     TeachersListComponent.prototype.check = function (x) {
-        for (var d = 0; d < this.data2.length(); d++) {
+        for (var d = 0; d < this.data2.length; d++) {
             if (x == this.data2[d].author) {
                 this.resources.push(this.data2[d]);
             }
             else {
                 continue;
             }
-            if (this.resources.length() == 0) {
+            if (this.resources.length == 0) {
                 return false;
             }
             else {
