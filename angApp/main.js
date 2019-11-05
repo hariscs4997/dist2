@@ -180,8 +180,6 @@ var AddResourceComponent = /** @class */ (function () {
                             _this.api.noloader();
                             _this.api.message("New Resource Created. Pending Admin's Approval");
                             _this.addResource.reset();
-                            _this.count = parseInt(localStorage.getItem("count2")) + 1;
-                            localStorage.setItem('count2', _this.count.toString());
                             window.location.href = "/categories";
                         });
                         _a.label = 3;
@@ -668,8 +666,8 @@ var AppComponent = /** @class */ (function () {
             _this.user = user;
         });
         this.username = localStorage.getItem("username");
-        var temp = parseInt(localStorage.getItem("count2")) || 0;
-        this.count = temp;
+        //   console.log(this.temp)
+        // this.count= temp;
     };
     AppComponent.prototype.ngOnDestroy = function () {
         if (this.mySubscription) {
@@ -695,6 +693,7 @@ var AppComponent = /** @class */ (function () {
         if (res) {
             this.logged = false;
             localStorage.removeItem('currentLogged');
+            localStorage.removeItem('username');
             window.location.href = '/login';
         }
     };
@@ -1061,14 +1060,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../api.service */ "./src/app/api.service.ts");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../app.component */ "./src/app/app.component.ts");
+
 
 
 
 var CategoriesComponent = /** @class */ (function () {
-    function CategoriesComponent(api) {
+    function CategoriesComponent(api, Child) {
         var _this = this;
         this.api = api;
+        this.Child = Child;
         this.empty = false;
+        this.getCount = function () { return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this, void 0, void 0, function () {
+            var data;
+            var _this = this;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.api.loader();
+                        return [4 /*yield*/, this.api.getData('get_pending/')];
+                    case 1:
+                        data = _a.sent();
+                        data.subscribe(function (res) {
+                            // console.log(res)
+                            _this.api.noloader();
+                            if (res.length == 0) {
+                                _this.Child.count = 0;
+                            }
+                            else {
+                                // this.data = res
+                                _this.count = res.length;
+                                _this.Child.count = _this.count;
+                                // localStorage.setItem('count2',this.count.toString());
+                            }
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
         this.getResources = function () { return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this, void 0, void 0, function () {
             var data;
             var _this = this;
@@ -1080,13 +1109,14 @@ var CategoriesComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            _this.api.noloader();
                             if (res.length > 0) {
                                 _this.subjects = res;
+                                // console.log(res)
                             }
                             else {
                                 _this.empty = true;
                             }
+                            _this.api.noloader();
                         });
                         return [2 /*return*/];
                 }
@@ -1098,6 +1128,7 @@ var CategoriesComponent = /** @class */ (function () {
     }
     CategoriesComponent.prototype.ngOnInit = function () {
         this.getResources();
+        this.getCount();
     };
     CategoriesComponent.prototype.getname = function (a) {
         localStorage.setItem("Subject", a);
@@ -1108,7 +1139,7 @@ var CategoriesComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./categories.component.html */ "./src/app/categories/categories.component.html"),
             styles: [__webpack_require__(/*! ./categories.component.css */ "./src/app/categories/categories.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"], _app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]])
     ], CategoriesComponent);
     return CategoriesComponent;
 }());
@@ -1251,7 +1282,9 @@ var HomeComponent = /** @class */ (function () {
             }
         ];
         this.getSubjects = function () {
-            _this.api.getallsubjects().subscribe(function (data) { _this.featured = data; }, function (error) { console.log(error); });
+            _this.api.getallsubjects().subscribe(function (data) { _this.featured = data; }, function (error) {
+                //  console.log(error);
+            });
         };
         this.getSubjects();
         if (localStorage.getItem('Token') == null || localStorage.getItem('Token') == undefined) {
@@ -1506,7 +1539,7 @@ var MypinsComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         }, function (err) {
@@ -1582,7 +1615,7 @@ var MypinsComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.rate = 0;
                             _this.api.noloader();
                             _this.rateCommentForm.reset();
@@ -1671,12 +1704,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../api.service */ "./src/app/api.service.ts");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../app.component */ "./src/app/app.component.ts");
+
 
 
 
 var PendingComponent = /** @class */ (function () {
-    function PendingComponent(api) {
+    function PendingComponent(api, Child) {
         this.api = api;
+        this.Child = Child;
         this.empty = false;
         if (localStorage.getItem('Token') == null || localStorage.getItem('Token') == undefined) {
             window.location.href = '/login';
@@ -1705,7 +1741,8 @@ var PendingComponent = /** @class */ (function () {
                             else {
                                 _this.data = res;
                                 _this.count = res.length;
-                                localStorage.setItem("count2", _this.count.toString());
+                                _this.Child.count = _this.count;
+                                // localStorage.setItem("count2",this.count.toString());
                             }
                         });
                         return [2 /*return*/];
@@ -1745,11 +1782,11 @@ var PendingComponent = /** @class */ (function () {
                         data.subscribe(function (res) {
                             // console.log(res)
                             _this.api.noloader();
-                            _this.count--;
-                            localStorage.setItem("count2", _this.count.toString());
                             _this.api.message('Disapproved');
                             _this.data.splice(i, 1);
-                            window.location.href = "/categories";
+                            _this.count--;
+                            _this.Child.count = _this.count;
+                            // window.location.href = "/categories"
                         }, function (err) {
                             if (err) {
                                 // console.log(err)
@@ -1777,11 +1814,11 @@ var PendingComponent = /** @class */ (function () {
                         data.subscribe(function (res) {
                             // console.log(res)
                             _this.api.noloader();
-                            _this.count--;
-                            localStorage.setItem("count2", _this.count.toString());
                             _this.api.message('Approved');
                             _this.data.splice(i, 1);
-                            window.location.href = "/categories";
+                            // window.location.href = "/categories"
+                            _this.count--;
+                            _this.Child.count = _this.count;
                         });
                         return [2 /*return*/];
                 }
@@ -1798,7 +1835,7 @@ var PendingComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./pending.component.html */ "./src/app/pending/pending.component.html"),
             styles: [__webpack_require__(/*! ./pending.component.css */ "./src/app/pending/pending.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"], _app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]])
     ], PendingComponent);
     return PendingComponent;
 }());
@@ -2077,7 +2114,7 @@ var ResourceComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.rate = 0;
                             _this.api.noloader();
                             _this.rateCommentForm.reset();
@@ -2131,7 +2168,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center py-5\">\r\n  <h3> What Best Describe You?</h3>\r\n  <div class=\"role mt-5 text-center pointer\" (click)=\"setRole('teacher')\" title=\"Register as Teacher\">\r\n    <img src=\"assets/images/teacher.png\" alt=\"teacher\">\r\n    <h3 style=\"margin-top:20px;\">Teacher</h3>\r\n  </div>\r\n  <div class=\"role mt-5 text-center pointer\" (click)=\"setRole('student')\" title=\"Register as Student\">\r\n    <img src=\"assets/images/student.png\" alt=\"student\" style=\"border-radius: 50%;border: 6px solid #f36f3a;\">\r\n    <h3 style=\"margin-top:20px;\">Student</h3>\r\n  </div>\r\n</div>"
+module.exports = "<div class=\"text-center py-5\">\r\n  <h3> What Best Describe You?</h3>\r\n  <div class=\"role mt-5 text-center pointer\" (click)=\"setRole('teacher')\" title=\"Register as Teacher\">\r\n    <img src=\"assets/images/teacher2.png\" alt=\"teacher\" width=\"320px\" height=\"320px\">\r\n  </div>\r\n  <div class=\"role mt-5 text-center pointer\" (click)=\"setRole('student')\" title=\"Register as Student\">\r\n    <img src=\"assets/images/Student-01.png\" alt=\"student\" width=\"320px\" height=320px>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2278,7 +2315,7 @@ var SearchComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         });
@@ -2297,7 +2334,7 @@ var SearchComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         }, function (err) {
@@ -2335,7 +2372,7 @@ var SearchComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.data = res.resources;
                             var _loop_1 = function (i) {
                                 _this.comments = res.comments.filter(function (c) { return c.resource == _this.data[i].id; });
@@ -2350,7 +2387,6 @@ var SearchComponent = /** @class */ (function () {
                                 }
                                 // console.log(twoComment)
                                 _this.data[i] = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, _this.data[i], { comments: _this.comments, fewComment: twoComment });
-                                console.log(_this.data);
                             };
                             for (var i = 0; i < _this.data.length; i++) {
                                 _loop_1(i);
@@ -2359,8 +2395,8 @@ var SearchComponent = /** @class */ (function () {
                             //   // this.onlyRating = this.ratings.filter(r => r.rated_by != this.comments[i].commenter)
                             // }
                             _this.api.noloader();
-                            console.log('this.data');
-                            console.log(_this.data);
+                            // console.log('this.data')
+                            // console.log(this.data)
                             if (_this.data.length == 0) {
                                 _this.empty = true;
                             }
@@ -2438,7 +2474,7 @@ var SearchComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.rate = 0;
                             _this.api.noloader();
                             _this.rateCommentForm.reset();
@@ -2632,7 +2668,7 @@ var SubcatComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             if (res.length == 0) {
                                 _this.empty = true;
@@ -2654,7 +2690,7 @@ var SubcatComponent = /** @class */ (function () {
             window.location.href = '/login';
         }
         this.id = this.route.snapshot.params['id'];
-        console.log(this.id);
+        // console.log(this.id)
     }
     SubcatComponent.prototype.ngOnInit = function () {
         this.getSubCategories();
@@ -2735,7 +2771,7 @@ var TeachersListComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.data = res.followed;
                             _this.data2 = res.resources;
@@ -2761,7 +2797,7 @@ var TeachersListComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                             // this.data = res
@@ -2781,7 +2817,7 @@ var TeachersListComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                             window.location.reload();
@@ -2914,7 +2950,6 @@ var TopRatedComponent = /** @class */ (function () {
                         data = _a.sent();
                         data.subscribe(function (res) {
                             _this.data = res.resources;
-                            console.log(_this.data);
                             var _loop_1 = function (i) {
                                 _this.comments = res.comments.filter(function (c) { return c.resource == _this.data[i].id; });
                                 // this.ratings = res.ratings.filter(c => c.resource == this.data[i].id)
@@ -2928,8 +2963,8 @@ var TopRatedComponent = /** @class */ (function () {
                                 }
                                 // console.log(twoComment)
                                 _this.data[i] = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, _this.data[i], { comments: _this.comments, fewComment: twoComment });
-                                console.log(_this.data);
                             };
+                            //  console.log(this.data)
                             for (var i = 0; i < _this.data.length; i++) {
                                 _loop_1(i);
                             }
@@ -2937,7 +2972,7 @@ var TopRatedComponent = /** @class */ (function () {
                             //   // this.onlyRating = this.ratings.filter(r => r.rated_by != this.comments[i].commenter)
                             // }
                             _this.api.noloader();
-                            console.log(_this.data);
+                            // console.log(this.data)
                             if (_this.data.length == 0) {
                                 _this.empty = true;
                             }
@@ -2957,7 +2992,7 @@ var TopRatedComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         });
@@ -2976,7 +3011,7 @@ var TopRatedComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         }, function (err) {
@@ -3070,7 +3105,7 @@ var TopRatedComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.rate = 0;
                             _this.api.noloader();
                             _this.rateCommentForm.reset();
@@ -3161,7 +3196,7 @@ var TopTeachersComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.data = res.Teachers;
                             _this.data2 = res.resources;
@@ -3182,7 +3217,7 @@ var TopTeachersComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                             // this.data = res
@@ -3202,7 +3237,7 @@ var TopTeachersComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             _this.api.message(res.OK);
                         }, function (err) {
@@ -3359,7 +3394,7 @@ var TopicsComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data.subscribe(function (res) {
-                            console.log(res);
+                            // console.log(res)
                             _this.api.noloader();
                             if (res.length == 0) {
                                 _this.empty = true;
